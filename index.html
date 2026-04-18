@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>旅遊攻略｜石垣島與宮古島</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans TC', sans-serif; background: #f7f5f0; min-height: 100vh; }
+    button { font-family: inherit; }
+    .space-y-4 > * + * { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState } = React;
+    const Card = ({ children, glow, style: s }) => (
+      <div style={{ background: "#fff", borderRadius: "16px", padding: "20px", boxShadow: glow ? "0 4px 24px rgba(61,90,128,0.12)" : "0 1px 6px rgba(0,0,0,0.04)", ...s }}>{children}</div>
+    );
+    const Tag = ({ children, c = "#3d5a80" }) => (
+      <span style={{ display: "inline-block", background: `${c}12`, color: c, fontSize: "10px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px", letterSpacing: "0.5px" }}>{children}</span>
+    );
+    const Pill = ({ children, bg = "#3d5a80" }) => (
+      <div style={{ display: "inline-block", background: bg, color: "#fff", fontSize: "11px", fontWeight: 700, padding: "4px 14px", borderRadius: "20px" }}>{children}</div>
+    );
+    const StatCard = ({ icon, val, unit, label, accent = "#3d5a80" }) => (
+      <div style={{ background: "#fff", borderRadius: "14px", padding: "16px 12px", textAlign: "center", boxShadow: "0 1px 6px rgba(0,0,0,0.04)", flex: 1, minWidth: "70px" }}>
+        <div style={{ fontSize: "22px", marginBottom: "4px" }}>{icon}</div>
+        <div style={{ fontSize: "22px", fontWeight: 900, color: accent, lineHeight: 1 }}>{val}<span style={{ fontSize: "11px", fontWeight: 400 }}>{unit}</span></div>
+        <div style={{ fontSize: "10px", color: "#999", marginTop: "4px", lineHeight: 1.3 }}>{label}</div>
+      </div>
+    );
+    const TimeStep = ({ time, text, highlight }) => (
+      <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+        <div style={{ width: "50px", textAlign: "right", fontSize: "11px", fontWeight: 700, color: highlight ? "#e07a5f" : "#3d5a80", flexShrink: 0, paddingTop: "2px" }}>{time}</div>
+        <div style={{ width: "8px", display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
+          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: highlight ? "#e07a5f" : "#3d5a80", flexShrink: 0 }} />
+          <div style={{ width: "2px", flex: 1, background: "#e5e0d5" }} />
+        </div>
+        <div style={{ fontSize: "13px", color: "#444", lineHeight: 1.6, paddingBottom: "4px" }}>{text}</div>
+      </div>
+    );
+    const CheckItem = ({ label, desc, when }) => (
+      <div style={{ padding: "12px 0", borderBottom: "1px solid #f5f2ed" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
+          <span style={{ fontSize: "13px", fontWeight: 700, color: "#333" }}>☐ {label}</span>
+          <Tag c="#e07a5f">{when}</Tag>
+        </div>
+        <div style={{ fontSize: "12px", color: "#999", marginTop: "3px" }}>{desc}</div>
+      </div>
+    );
+    const destinations = {
+      ishigaki: {
+        name: "石垣島", emoji: "🏝", accent: "#3d5a80", accent2: "#e07a5f",
+        tagline: "55 分鐘直飛，降落在日本唯一的星空保護區",
+        stats: [
+          { icon: "✈️", val: "55", unit: "min", label: "桃園直飛" },
+          { icon: "🌌", val: "84", unit: "/88", label: "可見星座" },
+          { icon: "⭐", val: "3", unit: "星", label: "川平灣米其林" },
+          { icon: "🚗", val: "1.5", unit: "hr", label: "環島一圈" },
+        ],
+        intro: "石垣島在沖繩最南邊，離台灣比離東京還近。這裡不是觀光客爆滿的沖繩本島，比較像一個安靜的海島小鎮。人少、海乾淨、晚上抬頭就是銀河。華航和虎航每週共 4 班直飛，到了就是日本。",
+        unique: [
+          { icon: "🌌", title: "沙灘上的銀河", tag: "日本唯一星空保護區", desc: "國際暗空協會認證，88 個星座裡 84 個看得到。6~9 月晚上 10 點左右，銀河整條橫跨天空，肉眼清晰可見。吃完晚餐帶幾罐啤酒走到海邊，躺下來就是了。", tip: "觀星導覽團約 $700/人。不參加也沒差，下載 Star Walk APP 自己看也很震撼。" },
+          { icon: "🏝", title: "幻之島", tag: "退潮限定", desc: "只有退潮才浮出水面的彎月形白色沙洲，360 度被蒂芬妮藍海水環繞。站上去那個瞬間的感覺大概是「這不是修圖嗎」。搭船 30 分鐘到。", tip: "半日 Tour 含登島 + 玩水，每人約 $2,000~3,000。潮汐限定，每天時間不一樣。" },
+          { icon: "🏄", title: "川平灣 SUP & 衝浪", tag: "米其林三星海灣", desc: "米其林綠色指南三顆星的海灣上划 SUP。有透明板版本，站上去像浮在空中。傍晚有夕陽時段。衝浪教學含裝備和教練約 3~4 小時，9 成是第一次玩的人。", tip: "SUP 每人約 $1,500~2,500，多數店家有免費接送。" },
+          { icon: "🥩", title: "石垣牛", tag: "牧場直送", desc: "A5 等級日本頂級和牛，在地吃比東京便宜一半。燒肉晚餐每人約 $1,200~1,800，推薦「きたうち牧場」，自家牧場所以有稀有部位。", tip: null },
+        ],
+        days: [
+          { day: "Day 1", title: "抵達 → 川平灣 → 石垣牛之夜 🔥", steps: [
+            { time: "06:30", text: "桃園起飛（華航早班）" },
+            { time: "08:25", text: "抵達石垣島，入境、取車" },
+            { time: "10:00", text: "放行李，吃個八重山麵當早午餐" },
+            { time: "11:00", text: "開車去川平灣，搭玻璃底船看珊瑚", highlight: true },
+            { time: "14:00", text: "回市區逛公設市場 + 唐吉訶德" },
+            { time: "18:00", text: "🔥 石垣牛燒肉（記得提前訂位）", highlight: true },
+            { time: "20:30", text: "居酒屋二攤，泡盛 + 島歌 Live 🎶" },
+          ]},
+          { day: "Day 2", title: "水上活動 → 幻之島 → 銀河之夜 🌌", steps: [
+            { time: "08:00", text: "衝浪 or SUP 半日體驗（店家接送）", highlight: true },
+            { time: "12:00", text: "海邊咖啡廳午餐（推薦 PUFFPUFF）" },
+            { time: "13:30", text: "幻之島半日 Tour（搭船、登島、拍照）", highlight: true },
+            { time: "17:00", text: "回飯店沖洗休息" },
+            { time: "18:30", text: "晚餐：沖繩料理或海鮮" },
+            { time: "21:00", text: "🌌 沙灘看銀河（帶啤酒和喇叭）", highlight: true },
+          ]},
+          { day: "Day 3", title: "竹富島 or 慢活 → 回家 ✈️", steps: [
+            { time: "08:00", text: "選 A：搭船去竹富島（15min），水牛車 + 腳踏車環島", highlight: true },
+            { time: "", text: "選 B：睡到自然醒，飯店泳池放空" },
+            { time: "12:00", text: "回石垣島午餐、買伴手禮" },
+            { time: "14:00", text: "還車 → 前往機場" },
+            { time: "14:50", text: "起飛回台灣 ✈️" },
+          ]},
+        ],
+        stayA: { title: "住市區，晚上出去逛", tag: "方便 + 夜生活", desc: "走路就到燒肉店、居酒屋、公設市場。吃完飯散步回飯店。", options: "• Art Hotel（泳池、三/四人房，$1,500~2,500/晚）\n• BREAKFAST HOTEL PORTO（免費泡盛暢飲到 8pm，$1,300~2,000/晚）\n• Vessel Hotel（旁邊就是石垣牛燒肉店，$1,400~2,200/晚）" },
+        stayB: { title: "住海邊度假村", tag: "放鬆 + 私人海灘", desc: "醒來就是海。飯店有私人海灘、泳池，晚上直接沙灘看星星。", options: "• 富崎海灘度假村（最大水上樂園、免費觀星導覽，$2,500~4,500/晚）\n• ANA 洲際（最小 40㎡、8 間餐廳，$3,000~5,500/晚）\n• Club Med（一價全包：吃住玩全含，$5,000~7,000/晚）" },
+        budgetRange: "$20,000~42,000",
+        flights: "華航：週三、六（06:30 飛）｜虎航：週四、日（12:00 飛）\n一週共 4 班直飛，確定日期後盡早訂",
+        flightNote: "建議買華航（可免費改簽）。旅平險加保旅程取消。出發前 5 天看氣象廳預報判斷颱風。",
+        transport: "① 租 8 人座（Alphard），1 天約 $300~400/人，需右駕\n② 包車含司機，1 天約 $600~800/人，不用開車",
+      },
+      miyako: {
+        name: "宮古島", emoji: "🌊", accent: "#2a7886", accent2: "#d4a373",
+        tagline: "90 分鐘直飛，三座跨海大橋連接五座島嶼",
+        stats: [
+          { icon: "✈️", val: "90", unit: "min", label: "桃園直飛" },
+          { icon: "🏖", val: "7", unit: "km", label: "東洋第一沙灘" },
+          { icon: "🌉", val: "3", unit: "座", label: "免費跨海大橋" },
+          { icon: "🚗", val: "2", unit: "hr", label: "跨島全覽" },
+        ],
+        intro: "宮古島被叫做「東亞的馬爾地夫」，水的顏色有個專有名詞叫「宮古藍」。跟石垣島不同，宮古島的特色是三座跨海大橋把五座島嶼串起來，開車就能一路跨島兜風，不用搭船。星宇航空直飛，每週一、四，90 分鐘到。",
+        unique: [
+          { icon: "🌉", title: "三座跨海大橋兜風", tag: "開車跨島", desc: "伊良部大橋（3,540m，日本最長免費橋）、池間大橋、來間大橋，三條橋把五座島串起來。開車經過的時候兩邊是一望無際的宮古藍大海，整趟路本身就是景點。3540 的日文諧音是「珊瑚島」。", tip: "建議安排一個半天專門跨島兜風，走走停停拍照，不趕行程。" },
+          { icon: "🏖", title: "與那霸前濱", tag: "東洋第一美海灘", desc: "7 公里的純白沙灘，沙細到像麵粉。被選為東洋最美海灘，4~10 月可以在上面做各種水上活動。日出和日落都很美，如果住在附近，早起走過去的話通常整片沙灘只有你們。", tip: "從機場開車 15 分鐘。旁邊有龍宮城展望台可以俯瞰整片海灘。" },
+          { icon: "✈️", title: "17END 幻影沙灘", tag: "跑道盡頭的祕境", desc: "下地島機場跑道盡頭延伸到海裡，退潮時跑道旁邊會出現一片夢幻的淺水沙灘。可以一邊踩水一邊看飛機從頭頂低空起降。這個畫面在全世界大概找不到第二個。", tip: "退潮時才看得到沙灘，要先查潮汐表。車不能開進去，需步行一段。" },
+          { icon: "🧂", title: "雪鹽", tag: "世界紀錄", desc: "宮古島的雪鹽被金氏世界紀錄認證為「含最多種礦物質的鹽」。雪鹽博物館可以免費參觀製程，還有雪鹽冰淇淋可以吃。帶幾包回來當伴手禮很實用。", tip: null },
+        ],
+        days: [
+          { day: "Day 1", title: "抵達 → 跨島兜風 → 夕陽晚餐 🌅", steps: [
+            { time: "07:20", text: "桃園起飛（星宇航空）" },
+            { time: "09:35", text: "抵達下地島機場，取車" },
+            { time: "10:30", text: "直奔 17END 幻影沙灘（查好退潮時間）", highlight: true },
+            { time: "12:00", text: "佐良濱漁港午餐（鮮魚定食）" },
+            { time: "13:30", text: "🌉 伊良部大橋兜風 → 三角點打卡", highlight: true },
+            { time: "15:00", text: "與那霸前濱放空踩水" },
+            { time: "17:30", text: "🌅 來間島展望台看夕陽 + 海景咖啡廳", highlight: true },
+            { time: "19:00", text: "市區居酒屋晚餐（推薦あーさぐー屋）" },
+          ]},
+          { day: "Day 2", title: "海上活動 → 池間島 → 星空 ✨", steps: [
+            { time: "08:30", text: "SUP or 衝浪體驗（半日）", highlight: true },
+            { time: "12:00", text: "Blue Turtle 海景咖啡廳午餐" },
+            { time: "13:30", text: "🌉 池間大橋兜風 → 池間島散步", highlight: true },
+            { time: "15:00", text: "砂山海灘（天然岩石拱門拍照）" },
+            { time: "16:30", text: "雪鹽博物館 + 雪鹽冰淇淋" },
+            { time: "18:00", text: "東平安名崎看日落" },
+            { time: "19:30", text: "晚餐（宮古牛 or 海鮮）" },
+            { time: "21:00", text: "✨ 長間濱海灘看星空", highlight: true },
+          ]},
+          { day: "Day 3", title: "最後巡禮 → 回家 ✈️", steps: [
+            { time: "08:00", text: "飯店早餐 → 與那霸前濱日出散步" },
+            { time: "09:30", text: "IMGYA 海上樂園（天然潟湖，適合玩水）", highlight: true },
+            { time: "11:00", text: "SHIGIRA 黃金溫泉泡湯（海景露天風呂）" },
+            { time: "12:30", text: "午餐 → 買伴手禮" },
+            { time: "14:00", text: "還車 → 前往下地島機場" },
+            { time: "15:30", text: "起飛回台灣 ✈️（或依班次調整）" },
+          ]},
+        ],
+        stayA: { title: "住平良市區，覓食方便", tag: "經濟 + 覓食", desc: "居酒屋、餐廳集中在這裡。新飯店多，有的還附廚房。走路就能逛。", options: "• Hotel Locus（設計感新飯店，$2,000~3,000/晚）\n• TABINO HOTEL lit（簡約風，$1,800~2,800/晚）\n• Hotel California Miyakojima（附廚房，$2,200~3,200/晚）" },
+        stayB: { title: "住海景度假村，什麼都不管", tag: "奢華 + 放空", desc: "直接面海，泳池、沙灘、餐廳都在飯店裡。適合整天待著不動。", options: "• 宮古島東急飯店（經典海景，$4,000~7,000/晚）\n• the rescape（避世概念私人度假村，$6,000~10,000/晚）\n• SHIGIRA 度假村群（含溫泉、高爾夫，$5,000~9,000/晚）" },
+        budgetRange: "$22,000~48,000",
+        flights: "星宇航空：週一、四（07:20 飛，09:35 到）\n每週 2 班直飛，座位有限要提早訂",
+        flightNote: "星宇是目前台灣唯一直飛宮古島的航空，班次比石垣更少（週 2 班），日期彈性低，確定就先搶票。",
+        transport: "① 租車自駕（推薦，島上平坦好開），1 天約 $350~500/人分攤\n② 包車 1 日遊，約 $700~1,000/人\n宮古島一樣是右駕，但路更寬、車更少、幾乎沒有窄巷",
+      },
+    };
+    const tabsMap = ["快速看完", "只有這裡才有", "三天怎麼玩", "住哪裡 + 花多少", "出發前要準備"];
+    function App() {
+      const [dest, setDest] = useState("ishigaki");
+      const [tab, setTab] = useState(0);
+      const d = destinations[dest];
+      return (
+        <div style={{ fontFamily: "'Noto Sans TC', sans-serif", background: "#f7f5f0", minHeight: "100vh" }}>
+          <div style={{ background: dest === "ishigaki" ? "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)" : "linear-gradient(135deg, #0a3d62 0%, #1e6f7a 50%, #38ada9 100%)", color: "#fff", padding: "36px 20px 20px", textAlign: "center", transition: "background 0.4s" }}>
+            <div style={{ fontSize: "40px", marginBottom: "6px" }}>{d.emoji}</div>
+            <h1 style={{ fontSize: "24px", fontWeight: 900, letterSpacing: "0.5px" }}>{d.name}行前攻略</h1>
+            <p style={{ fontSize: "12px", opacity: 0.7, marginTop: "6px", maxWidth: "320px", margin: "6px auto 0" }}>{d.tagline}</p>
+            <p style={{ fontSize: "11px", opacity: 0.5, marginTop: "12px" }}>朋友團 3D2N ・ 6~8 月 ・ 6~8 人</p>
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", gap: "8px", padding: "12px 16px", background: "#fff", borderBottom: "1px solid #eee" }}>
+            {Object.entries(destinations).map(([k, v]) => (
+              <button key={k} onClick={() => { setDest(k); setTab(0); }} style={{ padding: "8px 20px", borderRadius: "20px", fontSize: "13px", fontWeight: dest === k ? 700 : 400, background: dest === k ? v.accent : "#f5f2ed", color: dest === k ? "#fff" : "#888", border: "none", cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s" }}>
+                {v.emoji} {v.name}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: "flex", overflowX: "auto", background: "#fff", borderBottom: "1px solid #eee", position: "sticky", top: 0, zIndex: 10 }}>
+            {tabsMap.map((t, i) => (
+              <button key={i} onClick={() => setTab(i)} style={{ flex: "none", padding: "11px 14px", fontSize: "12px", fontWeight: tab === i ? 700 : 400, color: tab === i ? d.accent : "#999", background: "none", border: "none", borderBottom: tab === i ? `2px solid ${d.accent}` : "2px solid transparent", cursor: "pointer", whiteSpace: "nowrap", fontFamily: "inherit" }}>{t}</button>
+            ))}
+          </div>
+          <div style={{ maxWidth: "680px", margin: "0 auto", padding: "20px 16px 60px" }}>
+            {tab === 0 && (
+              <div className="space-y-4">
+                <Card glow><p style={{ fontSize: "13px", color: "#444", lineHeight: 1.9 }}>{d.intro}</p></Card>
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  {d.stats.map((s, i) => <StatCard key={i} {...s} accent={d.accent} />)}
+                </div>
+                <Card style={{ background: `linear-gradient(135deg, ${d.accent}08, ${d.accent}15)`, border: `1px solid ${d.accent}20` }}>
+                  <div style={{ fontSize: "13px", color: "#444", lineHeight: 1.9 }}>
+                    <strong style={{ color: d.accent }}>夏天去的好處：</strong>
+                    {dest === "ishigaki" ? "6~9 月是銀河季（肉眼看到銀河）、海水透明度最高、水上活動選擇最多、日照最長一天可以玩更久。" : "海水溫度最舒服、「宮古藍」最濃烈、所有水上活動全開、日照時間長到晚上 7 點半還有太陽。"}
+                  </div>
+                </Card>
+              </div>
+            )}
+            {tab === 1 && (
+              <div className="space-y-4">
+                <p style={{ fontSize: "13px", color: "#999", marginBottom: "4px" }}>研究之後才發現的幾個亮點，其他海島真的很難複製 👇</p>
+                {d.unique.map((u, i) => (
+                  <Card key={i} glow>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                      <span style={{ fontSize: "24px" }}>{u.icon}</span>
+                      <span style={{ fontSize: "15px", fontWeight: 700, color: "#1a1a2e" }}>{u.title}</span>
+                      <Tag c={d.accent2}>{u.tag}</Tag>
+                    </div>
+                    <p style={{ fontSize: "13px", color: "#555", lineHeight: 1.9 }}>{u.desc}</p>
+                    {u.tip && (
+                      <div style={{ background: "#f8f6f2", borderRadius: "10px", padding: "10px 12px", marginTop: "10px", fontSize: "12px", color: "#777", lineHeight: 1.7 }}>💡 {u.tip}</div>
+                    )}
+                  </Card>
+                ))}
+              </div>
+            )}
+            {tab === 2 && (
+              <div className="space-y-4">
+                <p style={{ fontSize: "13px", color: "#999", marginBottom: "4px" }}>大概的節奏，到時候再看大家想法微調 🤙</p>
+                {d.days.map((day, di) => (
+                  <Card key={di} glow>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "14px" }}>
+                      <Pill bg={d.accent}>{day.day}</Pill>
+                      <span style={{ fontSize: "14px", fontWeight: 700, color: "#1a1a2e" }}>{day.title}</span>
+                    </div>
+                    {day.steps.map((s, si) => <TimeStep key={si} {...s} />)}
+                  </Card>
+                ))}
+                <Card style={{ background: "#f8f6f2" }}>
+                  <div style={{ fontSize: "12px", color: "#888", lineHeight: 1.8 }}>✈️ <strong>航班：</strong>{d.flights.split("\n").map((l, i) => <span key={i}>{l}<br/></span>)}</div>
+                </Card>
+              </div>
+            )}
+            {tab === 3 && (
+              <div className="space-y-4">
+                <p style={{ fontSize: "13px", color: "#999", marginBottom: "4px" }}>兩種住法，看大家喜歡哪種。也可以混搭（第一晚市區、第二晚度假村）。</p>
+                {[d.stayA, d.stayB].map((s, i) => (
+                  <Card key={i} glow>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                      <span style={{ fontSize: "15px", fontWeight: 700, color: "#1a1a2e" }}>{s.title}</span>
+                      <Tag c={i === 0 ? d.accent2 : d.accent}>{s.tag}</Tag>
+                    </div>
+                    <p style={{ fontSize: "13px", color: "#666", lineHeight: 1.7, marginBottom: "10px" }}>{s.desc}</p>
+                    <div style={{ background: "#f8f6f2", borderRadius: "10px", padding: "12px", fontSize: "12px", color: "#555", lineHeight: 1.8, whiteSpace: "pre-line" }}>{s.options}</div>
+                  </Card>
+                ))}
+                <Card glow style={{ borderTop: `3px solid ${d.accent}` }}>
+                  <div style={{ fontSize: "14px", fontWeight: 700, color: "#1a1a2e", marginBottom: "8px" }}>💰 每人預估（3D2N）</div>
+                  <div style={{ fontSize: "24px", fontWeight: 900, color: d.accent, marginBottom: "10px" }}>{d.budgetRange}</div>
+                  <div style={{ fontSize: "13px", color: "#666", lineHeight: 1.9 }}>
+                    <strong>省著玩：</strong>{dest === "ishigaki" ? "虎航 + 市區飯店 + 租車分攤 → 約 $20,000~25,000" : "星宇經濟 + 市區飯店 + 租車分攤 → 約 $22,000~28,000"}<br/>
+                    <strong>好好享受：</strong>{dest === "ishigaki" ? "華航 + 海景度假村 + 包車 + 全套活動 → 約 $35,000~42,000" : "星宇 + 海景度假村 + 包車 + 全套活動 → 約 $38,000~48,000"}<br/>
+                    <strong>折衷推薦：</strong>混搭住宿 + 租車 → 約 {dest === "ishigaki" ? "$27,000~32,000" : "$30,000~36,000"}
+                  </div>
+                </Card>
+                <Card style={{ background: "#f8f6f2" }}>
+                  <div style={{ fontSize: "12px", color: "#888", lineHeight: 1.8 }}>🚗 <strong>交通：</strong>{d.transport.split("\n").map((l, i) => <span key={i}>{l}<br/></span>)}</div>
+                </Card>
+              </div>
+            )}
+            {tab === 4 && (
+              <div className="space-y-4">
+                <p style={{ fontSize: "13px", color: "#999", marginBottom: "4px" }}>出發前的 checklist，照著做就好 ✅</p>
+                <Card glow>
+                  {[
+                    { label: "護照", desc: "效期至少 6 個月以上", when: "1 個月前確認" },
+                    { label: "駕照日文譯本", desc: "帶身分證+駕照去監理站，$100，當天拿", when: "2 週前去辦" },
+                    { label: "Visit Japan Web", desc: "入境日本的線上表格，填好產生 QR code", when: "3 天前填" },
+                    { label: "日圓現金", desc: "每人帶 ¥30,000（約 $6,600）就夠，大部分可刷卡", when: "出發前換" },
+                    { label: "上網", desc: "買日本 eSIM 或租 WiFi 機", when: "3 天前買" },
+                    { label: "旅平險", desc: "建議加保旅程取消（颱風季多一層保障）", when: "1 週前買" },
+                  ].map((item, i) => <CheckItem key={i} {...item} />)}
+                </Card>
+                <Card glow>
+                  <div style={{ fontSize: "14px", fontWeight: 700, color: "#1a1a2e", marginBottom: "8px" }}>🌀 颱風的事</div>
+                  <p style={{ fontSize: "13px", color: "#555", lineHeight: 1.9 }}>6~8 月是颱風季沒錯，但整個夏天大約只有 2~3 個颱風經過附近，每次影響 2~3 天。出發前 5 天看預報就能判斷。{d.flightNote}</p>
+                </Card>
+                <Card style={{ background: "#f8f6f2" }}>
+                  <div style={{ fontSize: "12px", color: "#888", lineHeight: 1.8 }}>📱 <strong>實用 APP：</strong>Star Walk 2（觀星）・Google Maps（導航）・Tabelog（找餐廳）・Tabirai（租車比價）</div>
+                </Card>
+              </div>
+            )}
+          </div>
+          <div style={{ textAlign: "center", padding: "16px", fontSize: "11px", color: "#ccc" }}>有問題就丟群組 👋</div>
+        </div>
+      );
+    }
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
