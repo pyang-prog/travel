@@ -12,13 +12,83 @@
     body { font-family: 'Noto Sans TC', sans-serif; background: #f7f5f0; min-height: 100vh; }
     button { font-family: inherit; }
     .space-y-4 > * + * { margin-top: 16px; }
+    #pw-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #pw-box {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px; padding: 40px 32px;
+      text-align: center; width: 300px;
+      backdrop-filter: blur(12px);
+    }
+    #pw-box .emoji { font-size: 44px; margin-bottom: 12px; }
+    #pw-box h2 { color: #fff; font-size: 18px; font-weight: 900; margin-bottom: 6px; }
+    #pw-box p { color: rgba(255,255,255,0.5); font-size: 12px; margin-bottom: 24px; }
+    #pw-input {
+      width: 100%; padding: 12px 16px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1); color: #fff;
+      font-size: 20px; letter-spacing: 6px; text-align: center;
+      font-family: inherit; outline: none; margin-bottom: 12px;
+    }
+    #pw-input::placeholder { letter-spacing: 2px; font-size: 13px; color: rgba(255,255,255,0.3); }
+    #pw-btn {
+      width: 100%; padding: 12px; border-radius: 12px;
+      background: #3d5a80; color: #fff; font-size: 14px;
+      font-weight: 700; border: none; cursor: pointer;
+      font-family: inherit; transition: background 0.2s;
+    }
+    #pw-btn:hover { background: #2d4a70; }
+    #pw-error { color: #e07a5f; font-size: 12px; margin-top: 10px; min-height: 18px; }
   </style>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="pw-overlay">
+    <div id="pw-box">
+      <div class="emoji">🏝</div>
+      <h2>旅遊攻略</h2>
+      <p>石垣島 × 宮古島</p>
+      <input id="pw-input" type="password" placeholder="輸入密碼" maxlength="20" />
+      <button id="pw-btn">進入</button>
+      <div id="pw-error"></div>
+    </div>
+  </div>
+  <div id="root" style="display:none"></div>
+  <script>
+    (function(){
+      var PW = '5566';
+      if(sessionStorage.getItem('travel_auth')==='ok'){
+        document.getElementById('pw-overlay').style.display='none';
+        document.getElementById('root').style.display='';
+        return;
+      }
+      function tryLogin(){
+        var val = document.getElementById('pw-input').value;
+        if(val===PW){
+          sessionStorage.setItem('travel_auth','ok');
+          document.getElementById('pw-overlay').style.display='none';
+          document.getElementById('root').style.display='';
+        } else {
+          document.getElementById('pw-error').textContent='密碼錯誤，再試一次 🙅';
+          document.getElementById('pw-input').value='';
+          document.getElementById('pw-input').focus();
+        }
+      }
+      document.getElementById('pw-btn').addEventListener('click', tryLogin);
+      document.getElementById('pw-input').addEventListener('keydown', function(e){
+        if(e.key==='Enter') tryLogin();
+        document.getElementById('pw-error').textContent='';
+      });
+    })();
+  </script>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+
   <script type="text/babel">
     const { useState } = React;
     const Card = ({ children, glow, style: s }) => (
